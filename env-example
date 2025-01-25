@@ -1,0 +1,2 @@
+MONGODB_URI = "mongodb+srv://feki:admin123@cluster0.sxidy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+DB_NAME = "gor_sinta"
