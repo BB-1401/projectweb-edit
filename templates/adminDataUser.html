@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="../static/img/sinta.png" rel="icon" type="image/x-icon" />
+
+    <title>Booking Page | Gor Sinta</title>
+    <link href="./static/src/output.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sidebar-toggle').click(function () {
+                $('.lg\\:block').toggle();
+            });
+
+            function confirmLogout(url) {
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin logout?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, logout',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            window.confirmLogout = confirmLogout;
+    
+            $('.hapus-data-btn').click(function () {
+                var id = $(this).data('id');
+                var url = '/hapusDataPelanggan/' + id;
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin menghapus data pelanggan?',
+                    text: "Tindakan ini tidak bisa dibatalkan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        .product-image {
+            width: 50px; /* Sesuaikan ukuran foto sesuai kebutuhan */
+            height: 50px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+{% include "asideAdmin.html" %}
+
+<div class="container mx-auto px-8 py-10">
+    <div class="sm:flex sm:items-center sm:justify-between mb-6">
+        <div>
+            <div class="flex items-center gap-x-3">
+                <h2 class="text-lg font-medium text-gray-800 dark:text-white">Data Pelanggan</h2>
+                <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">Gor Shinta</span>
+            </div>
+        </div>
+        <div>
+            <a href="/tambahDataPelanggan" class="text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:outline-none px-5 py-2.5 rounded-lg shadow-lg transform transition-transform hover:scale-105">Tambah Pelanggan</a>
+        </div>
+    </div>
+
+    <div class="flex flex-col mt-6">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-800">
+                            <tr>
+                                <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <button class="flex items-center gap-x-3 focus:outline-none">
+                                        <span>Fullname</span>
+                                    </button>
+                                </th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">No. Handphone</th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Email</th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Alamat</th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Foto Profile</th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                            {% for data in users %}
+                            <tr class="b dark:text-gray-800">
+                                <td class="px-4 py-4 text-sm font-medium whitespace-wrap">
+                                    <div>
+                                        <h2>{{ data.fullname }}</h2>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4 text-sm whitespace-wrap">
+                                    <div>
+                                        <h4>{{ data.phone_number }}</h4>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4 text-sm whitespace-wrap">
+                                    <h2>{{ data.email }}</h2>
+                                </td>
+                                <td class="px-4 py-4 text-sm whitespace-wrap">
+                                    <h2>{{ data.alamat }}</h2>
+                                </td>
+                                <td class="px-4 py-4 text-sm whitespace-wrap">
+                                    {% if data.get('foto') %}
+                                        <img src="{{ url_for('static', filename='img/imgProfile/' + data.foto) }}" alt="Foto Pelanggan" class="product-image" style="cursor: pointer;" onclick="showModal('{{ url_for('static', filename='img/imgProfile/' + data.foto) }}')">
+                                    {% endif %}
+                                </td>
+                                
+                                <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                                    <button class="hapus-data-btn text-red-600 hover:text-red-900" data-id="{{ data._id }}">Hapus</button>
+                                </td>
+                            </tr>   
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+        <!-- Modal -->
+        <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden">
+            <div class="bg-white p-4 rounded shadow-lg">
+                <span class="close cursor-pointer absolute top-0 right-0 mt-2 mr-2 text-black text-xl">&times;</span>
+                <img id="modalImage" src="" alt="" class="w-1/2 h-1/2 object-contain">
+            </div>
+        </div>
+
+        <ol class="flex justify-end gap-1 text-xs font-medium py-3 px-3">
+            {% if total_pages > 1 %}
+                {% if page > 1 %}
+                    <li>
+                        <a href="/adminDataUser?page={{ page - 1 }}" class="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                            <span class="sr-only">Prev Page</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </li>
+                {% endif %}
+                {% for page_num in range(1, total_pages + 1) %}
+                    <li>
+                        <a href="/adminDataUser?page={{ page_num }}" class="block size-8 rounded border {{ 'border-blue-600 bg-blue-600 text-white' if page_num == page else 'border-gray-100 bg-white text-center leading-8 text-gray-900' }}">{{ page_num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page < total_pages %}
+                    <li>
+                        <a href="/adminDataUser?page={{ page + 1 }}" class="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                            <span class="sr-only">Next Page</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ol>
+        
+
+</div>
+<!-- form admin end -->
+</aside>
+<!-- sidebar end  -->
+
+<script>
+    // JavaScript for handling the modal
+    function showModal(imageSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = imageSrc;
+        modal.classList.remove('hidden');
+    }
+
+    document.querySelector('.close').onclick = function() {
+        document.getElementById('imageModal').classList.add('hidden');
+    };
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('imageModal');
+        if (event.target == modal) {
+            modal.classList.add('hidden');
+        }
+    };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="../static/img/sinta.png" rel="icon" type="image/x-icon" />
+
+    <title>Booking Page | Gor Sinta</title>
+    <link href="../static/src/output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".filter-button").click(function(){
+                var filter = $(this).attr('data-filter');
+                $(".lapangan-card").hide();
+                if(filter == "all"){
+                    $(".lapangan-card").show();
+                } else {
+                    $(".lapangan-card[data-jenis='"+filter+"']").show();
+                }
+            });
+        });
+    </script>
+</head>
+<body style="background-image: url('../static/img/booking.png');" class="bg-cover bg-center min-h-screen">
+
+<!-- navbar start -->
+{% include "headerBooking.html" %}
+<!-- navbar end  -->
+
+<!-- hero section start -->
+<section class="bg-transparent lg:mx-24">
+    <div class="container mx-auto lg:px-24 text-start">
+        <a class="group inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75 mb-10"
+        href="/login">
+        <span class="dark:text-gray-900 block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent group-hover:text-white transition duration-300 ease-in-out">
+            Kembali
+        </span>
+        </a>
+    </div>
+    <h1 class="text-5xl font-extrabold text-center mb-2 text-gray-900">Kategori</h1>
+    <h2 class="text-xl font-bold text-center mb-10 text-gray-500 underline">Olahraga apa yang kamu sukai?</h2>
+    
+    <div class="text-center">
+        <button class="filter-button px-6 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-full shadow-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-blue-400 transition duration-300 ease-in-out" data-filter="all">Semua</button>
+        <button class="filter-button px-6 py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full shadow-lg hover:bg-gradient-to-r hover:from-green-600 hover:to-green-400 transition duration-300 ease-in-out" data-filter="Futsal">Futsal</button>
+        <button class="filter-button px-6 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-red-400 transition duration-300 ease-in-out" data-filter="Badminton">Badminton</button>
+    </div>
+
+    <div class="flex justify-center gap-6 flex-wrap py-10">
+        {% for data in dataLapangan %}
+            <div class="card lapangan-card w-96 bg-white shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300" data-jenis="{{ data.jenis }}">
+                <figure class="px-10 pt-10">
+                    <img src="../static/img/{{data.foto}}" alt="{{ data.nama }}" class="rounded-xl shadow-md" />
+                </figure>
+                <div class="card-body items-center text-center p-6">
+                    <h2 class="card-title bg-gray-500 text-gray-100 py-2 px-6 rounded-md">{{ data.jenis }}</h2>
+                    <div class="flex justify-between items-center w-full px-6">
+                        <h3 class="text-xl font-semibold text-gray-800">{{data.nama}}</h3>
+                        <h4 class="text-lg text-green-500">Rp. {{data.harga}}</h4>
+                    </div>
+                    <!-- <p class="text-gray-700">{{ data.deskripsi }}</p> -->
+                    <div class="card-actions">
+                        <button class="btn btn-primary bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition" type="button" onclick="window.location.href='/selectTime/{{data._id}}'">Pesan Sekarang</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</section>
+<!-- hero section end -->
+</body>
+</html>

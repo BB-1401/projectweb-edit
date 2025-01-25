@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="{{ url_for('static', filename='img/sinta.png') }}" rel="icon" type="image/x-icon" />
+
+    <title>Booking Page | Gor Sinta</title>
+    <link href="{{ url_for('static', filename='src/output.css') }}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function previewPhoto(input) {
+            var preview = document.getElementById('photoPreview');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block'; // Tampilkan pratinjau foto
+            }
+
+            if (file) {
+                reader.readAsDataURL(file); // Baca file sebagai URL data
+            } else {
+                preview.src = ''; // Kosongkan pratinjau jika tidak ada file yang dipilih
+            }
+        }
+
+        $(document).ready(function() {
+            var currentPhoto = "{{ users.foto if users and users.foto else '' }}";
+            if (currentPhoto) {
+                $('#photoPreview').attr('src', "{{ url_for('static', filename='img/imgProfile/') }}" + currentPhoto).show();
+            }
+        });
+
+        function goBack() {
+            window.history.back(); // Fungsi untuk kembali ke halaman sebelumnya
+        }
+    </script>
+</head>
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('./static/img/profile.png')">
+
+    <!-- navbar start -->
+    {% include "headerBooking.html" %}
+    <!-- navbar end  -->
+
+    <!-- hero section start -->
+    <section class="container lg:px-40 md:px-12 py-10 mx-auto">
+        <h1 class="text-5xl font-bold text-gray-900 text-center pb-10">Profil Saya</h1>
+        <form action="{{ url_for('datadiri') }}" method="POST" enctype="multipart/form-data" class="flow-root rounded-lg border border-gray-100 py-3 shadow-sm">
+            <dl class="-my-3 divide-y divide-gray-100 text-sm">
+                <div class="grid grid-cols-1 gap-1 p-3 bg-gray-100 sm:grid-cols-3 sm:gap-4">
+                    <dt class="font-medium text-gray-900">Photo</dt>
+                    <dd class="text-gray-700 sm:col-span-2">
+                        <label for="photoInput" class="cursor-pointer inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Masukkan Photo</label>
+                        <input name="foto" type="file" id="photoInput" class="hidden" onchange="previewPhoto(this)">
+                        <img id="photoPreview" src="{{ url_for('static', filename='img/imgProfile/' + (users.foto if users and users.foto else '')) }}" alt="Preview" style="display: none; max-width: 100%; height: auto;" width="200px" class="py-4">
+                    </dd>
+                </div>
+                <div class="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                    <dt class="font-medium text-gray-900">Nama Lengkap</dt>
+                    <dd class="text-gray-700 sm:col-span-2">
+                        <input type="text" id="fullname" name="fullname" class="dark:text-gray-900 dark:bg-white border border-gray-300 rounded px-3 py-2 w-full" value="{{ users.fullname if users else '' }}">
+                    </dd>
+                </div>
+                <div class="grid grid-cols-1 gap-1 p-3 bg-gray-100 sm:grid-cols-3 sm:gap-4">
+                    <dt class="font-medium text-gray-900">Email</dt>
+                    <dd class="text-gray-700 sm:col-span-2">
+                        <input type="email" id="email" name="email" class="dark:text-gray-900 dark:bg-white  border border-gray-300 rounded px-3 py-2 w-full" value="{{ users.email if users else '' }}">
+                    </dd>
+                </div>
+                <div class="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                    <dt class="font-medium text-gray-900">No. Handphone</dt>
+                    <dd class="text-gray-700 sm:col-span-2">
+                        <input type="tel" id="phone_number" name="phone_number" class="dark:text-gray-900 dark:bg-white  border border-gray-300 rounded px-3 py-2 w-full" value="{{ users.phone_number if users else '' }}">
+                    </dd>
+                </div>
+                <div class="grid grid-cols-1 gap-1 p-3 bg-gray-100 sm:grid-cols-3 sm:gap-4">
+                    <dt class="font-medium text-gray-900">Alamat</dt>
+                    <dd class="text-gray-700 sm:col-span-2">
+                        <textarea id="alamat" name="alamat" class="dark:text-gray-900 dark:bg-white  border border-gray-300 rounded px-3 py-2 w-full">{{ users.alamat if users else '' }}</textarea>
+                    </dd>
+                </div>
+            </dl>
+            <div class="flex justify-end mt-4 gap-3">
+                <button type="submit" class="group flex items-center gap-4 rounded-lg border border-red-600 bg-red-600 px-5 py-3 transition-colors hover:bg-transparent focus:outline-none focus:ring">
+                    <span class="font-medium text-white transition-colors group-hover:text-red-600 group-active:text-red-500">Perbarui</span>
+                </button>
+                <button type="button" onclick="goBack()" class="group flex items-center gap-4 rounded-lg border border-gray-400 bg-gray-400 px-5 py-3 transition-colors hover:bg-transparent focus:outline-none focus:ring">
+                    <span class="font-medium text-white transition-colors group-hover:text-gray-600 group-active:text-gray-500">Kembali</span>
+                </button>
+            </div>
+        </form>
+    </section>
+    <!-- hero section end -->
+
+</body>
+</html>

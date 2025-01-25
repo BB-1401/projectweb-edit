@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="../static/img/sinta.png" rel="icon" type="image/x-icon" />
+
+    <title>Riwayat Pemesanan | Gor Sinta</title>
+    <link href="./static/src/output.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // jQuery script to toggle sidebar for mobile screens
+        $(document).ready(function () {
+            $('#sidebar-toggle').click(function () {
+                $('.lg\\:block').toggle();
+            });
+
+            function confirmLogout(url) {
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin logout?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, logout',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            window.confirmLogout = confirmLogout;
+
+            $('.selesaikan-btn').click(function () {
+                const orderId = $(this).data('id');
+                const url = `/selesaikan-pesanan/${orderId}`;
+    
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin menyelesaikan pesanan ini?',
+                    text: "Tindakan ini tidak dapat dibatalkan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, selesaikan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            success: function (response) {
+                                Swal.fire(
+                                    'Pesanan Selesai!',
+                                    response.message,
+                                    'success'
+                                ).then(() => {
+                                    // Refresh halaman atau lakukan manipulasi DOM lainnya sesuai kebutuhan
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menyelesaikan pesanan',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body class="bg-gray-100">
+    {% include "asideAdmin.html" %}
+    <div class="flex flex-col lg:flex-row">
+        <section class="container mx-auto px-4 py-10">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                <div class="flex items-center gap-x-3 mb-4 sm:mb-0">
+                    <h2 class="text-lg font-medium text-gray-800 dark:text-white">Data Pemesanan</h2>
+                    <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">Gor Shinta</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Nama</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">No. Handphone</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Tanggal</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Waktu</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Durasi</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Harga</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Jenis Lapangan</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Nama Lapangan</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Jenis Pembayaran</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Metode Pembayaran</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Bukti Pembayaran</th>
+                                    <th class="px-4 py-3 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                                {% for data in dataPemesanan %}
+                                <tr>
+                                    <td class="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200">{{ data.fullname }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.phone_number }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.selected_date }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.selected_time }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.selected_duration }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.selected_price }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.selected_sport }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.selected_court }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.payment_type }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ data.payment_method }}</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                        {% if data.payment_proof %}
+                                        <img src="{{ url_for('static', filename='img/' ~ data.payment_proof) }}" alt="Bukti Pembayaran" width="70" style="cursor: pointer;" onclick="showModal('{{ url_for('static', filename='img/' ~ data.payment_proof) }}')">
+                                        {% else %}
+                                        Tidak ada bukti
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                        <button class="text-white px-3 py-2 rounded-lg bg-green-500 hover:text-green-700 selesaikan-btn" data-id="{{ data._id }}">Selesai</button>
+                                    </td>
+                                </tr>   
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <ol class="flex justify-end gap-1 text-xs font-medium py-3 px-3">
+                {% if total_pages > 1 %}
+                    {% if page > 1 %}
+                        <li>
+                            <a href="/adminDataPemesanan?page={{ page - 1 }}" class="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                                <span class="sr-only">Prev Page</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page_num in range(1, total_pages + 1) %}
+                        <li>
+                            <a href="/adminDataPemesanan?page={{ page_num }}" class="block size-8 rounded border {{ 'border-blue-600 bg-blue-600 text-white' if page_num == page else 'border-gray-100 bg-white text-center leading-8 text-gray-900' }}">{{ page_num }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if page < total_pages %}
+                        <li>
+                            <a href="/adminDataPemesanan?page={{ page + 1 }}" class="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                                <span class="sr-only">Next Page</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ol>
+
+             <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden transition-opacity duration-300 ease-in-out">
+        <div class="bg-white p-4 rounded shadow-lg relative">
+            <span class="close cursor-pointer absolute top-0 right-0 mt-2 mr-2 text-black text-xl" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Bukti Pembayaran" class="w-1/2 h-1/2 object-contain">
+        </div>
+    </div>
+            
+        </section>
+    </div>
+</aside>
+
+<script>
+    // JavaScript for handling the modal
+    function showModal(imageSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = imageSrc;
+        modal.classList.remove('hidden');
+    }
+
+    document.querySelector('.close').onclick = function() {
+        document.getElementById('imageModal').classList.add('hidden');
+    };
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('imageModal');
+        if (event.target == modal) {
+            modal.classList.add('hidden');
+        }
+    };
+</script>
+</body>
+</html>

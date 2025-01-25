@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="../static/img/sinta.png" rel="icon" type="image/x-icon" />
+
+    <title>Invoice | Gor Sinta</title>
+    <link href="../static/src/output.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .printableArea, .printableArea * {
+                visibility: visible;
+            }
+            .printableArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                box-shadow: none;
+                background-size: cover;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<!-- navbar start -->
+{% include "headerBooking.html" %}
+<!-- navbar end  -->
+
+<!-- hero section start -->
+<section class="printableArea">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="dark:text-gray-900 text-2xl font-semibold mb-6 text-center">Bukti Pemesanan</h2>
+            <div class="mb-4 border-b-2 pb-4">
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Nama:</span>
+                    <span class="dark:text-gray-900">{{ payment.fullname }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">No. Telepon:</span>
+                    <span class="dark:text-gray-900">{{ payment.phone_number }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Email:</span>
+                    <span class="dark:text-gray-900">{{ payment.email }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Tanggal Pemesanan:</span>
+                    <span class="dark:text-gray-900">{{ payment.selected_date }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Waktu Pemesanan:</span>
+                    <span class="dark:text-gray-900">{{ payment.selected_time }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Durasi Pemesanan:</span>
+                    <span class="dark:text-gray-900">{{ payment.selected_duration }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Olahraga:</span>
+                    <span class="dark:text-gray-900">{{ payment.selected_sport }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Lapangan:</span>
+                    <span class="dark:text-gray-900">{{ payment.selected_court }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Harga:</span>
+                    <span class="dark:text-gray-900">{{ payment.selected_price }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Jenis Pembayaran:</span>
+                    <span class="dark:text-gray-900">{{ payment.payment_type }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="dark:text-gray-900 font-medium">Metode Pembayaran:</span>
+                    <span class="dark:text-gray-900">{{ payment.payment_method }}</span>
+                </div>
+            </div>
+            {% if payment.payment_proof %}
+            <div class="mb-4 border-t-2 pt-4">
+                <p class="font-medium mb-2">Bukti Pembayaran:</p>
+                <img src="{{ url_for('static', filename='img/' + payment.payment_proof) }}" alt="Bukti Pembayaran" class="w-full h-auto rounded-lg shadow">
+            </div>
+            {% endif %}
+            <div class="text-center mt-6 no-print">
+                <a href="/" class="print-button bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Selesai</a>
+                <button onclick="window.print()" class="print-button bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Cetak</button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- hero section end -->
+
+</body>
+</html>

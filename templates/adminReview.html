@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="../static/img/sinta.png" rel="icon" type="image/x-icon" />
+
+    <title>Booking Page | Gor Sinta</title>
+    <link href="./static/src/output.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script>
+        // jQuery script to toggle sidebar for mobile screens
+        $(document).ready(function () {
+            $('#sidebar-toggle').click(function () {
+                $('.lg\\:block').toggle();
+            });
+        });
+
+        function confirmDelete(url) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            })
+        }
+
+        // JavaScript for handling the modal
+        function showModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+    </script>
+    <style>
+        .opacity-100 {
+            opacity: 1;
+        }
+        #imageModal {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+
+    {% include "asideAdmin.html" %}
+        <!-- form admin start -->
+        <div class="min-h-screen flex flex-col">
+            <section class="container px-4 py-10 mx-auto">
+                <div class="sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <div class="flex items-center gap-x-3">
+                            <h2 class="text-lg font-medium text-gray-800 dark:text-white">Review Lapangan</h2>
+                            <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">Gor Shinta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="overflow-x-auto">
+                        <div class="min-w-full inline-block align-middle">
+                            <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800">
+                                        <tr>
+                                            <th scope="col" class="py-3 px-4 text-sm font-normal text-left text-gray-500 dark:text-gray-400">
+                                                <button class="flex items-center gap-x-3 focus:outline-none">
+                                                    <span>Nama</span>
+                                                </button>
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-sm font-normal text-left text-gray-500 dark:text-gray-400">
+                                                Email
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-sm font-normal text-left text-gray-500 dark:text-gray-400">
+                                                Foto
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-sm font-normal text-left text-gray-500 dark:text-gray-400 w-1/3">
+                                                Deskripsi
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-sm font-normal text-left text-gray-500 dark:text-gray-400">
+                                                Tanggal
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-sm font-normal text-left text-gray-500 dark:text-gray-400">
+                                                Tindakan
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                                        {% for data in dataReview %}
+                                        <tr class="dark:text-gray-800">
+                                            <td class="px-4 py-4 text-sm font-medium whitespace-wrap">
+                                                <div>
+                                                    <h2>{{ data.nama }}</h2>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-4 text-sm font-medium whitespace-wrap">
+                                                <div>
+                                                    <h4>{{ data.email }}</h4>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-4 text-sm font-medium whitespace-wrap">
+                                                <div>
+                                                    <img src="../static/img/{{data.foto}}" alt="" width="70px" class="cursor-pointer" data-img-url="../static/img/{{data.foto}}" onclick="showModal(this.dataset.imgUrl)">
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-4 text-sm whitespace-normal max-w-xs">
+                                                <h2>{{ data.ulasan }}</h2>
+                                            </td>
+                                            <td class="px-4 py-4 text-sm whitespace-wrap">
+                                                <h2>{{ data.tanggal }}</h2>
+                                            </td>
+                                            <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                                                <button class="text-red-600 hover:text-red-900" onclick="confirmDelete('/hapusReview/{{data._id}}')">Hapus</button>
+                                            </td>
+                                        </tr>   
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ol class="flex justify-end gap-1 text-xs font-medium py-3 px-3">
+                    {% if total_pages > 1 %}
+                        {% if page > 1 %}
+                            <li>
+                                <a href="/review?page={{ page - 1 }}" class="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                                    <span class="sr-only">Prev Page</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for page_num in range(1, total_pages + 1) %}
+                            <li>
+                                <a href="/review?page={{ page_num }}" class="block size-8 rounded border {{ 'border-blue-600 bg-blue-600 text-white' if page_num == page else 'border-gray-100 bg-white text-center leading-8 text-gray-900' }}">{{ page_num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if page < total_pages %}
+                            <li>
+                                <a href="/review?page={{ page + 1 }}" class="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                                    <span class="sr-only">Next Page</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ol>
+                
+               
+            </section>
+        </div>
+        <!-- form admin end -->
+    </aside>
+    <!-- sidebar end  -->
+
+    <!-- Modal for showing larger image -->
+    <div id="imageModal" class="fixed z-10 top-0 left-0 w-full h-full bg-black bg-opacity-75 hidden justify-center items-center">
+        <div class="bg-white rounded-lg overflow-hidden">
+            <button class="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800" onclick="closeModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <img id="modalImage" src="" alt="Modal Image" class="w-1/2 h-1/2" >
+        </div>
+    </div>
+</body>
+</html>

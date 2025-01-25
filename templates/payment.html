@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="../static/img/sinta.png" rel="icon" type="image/x-icon" />
+
+    <title>Booking Page | Gor Sinta</title>
+    <link href="../static/src/output.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body style="background-image: url('./static/img/booking.png')" class="bg-cover bg-center min-h-screen">
+
+<!-- navbar start -->
+{% include "headerBooking.html" %}
+<!-- navbar end  -->
+
+<!-- hero section start -->
+<section>
+    <div class="container mx-auto lg:px-24">
+        <a class="group inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+        href="/selectField">
+        <span class="dark:text-gray-900 block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent">
+            Kembali
+        </span>
+    </a>
+    </div>
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="dark:text-gray-900 text-2xl font-semibold mb-6 text-center">Pembayaran</h2>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Pilih Jenis Pembayaran:</label>
+                    <div class="flex items-center mb-4">
+                        <input type="radio" id="online_payment" name="payment_type" value="online" class="dark:bg-white mr-2">
+                        <label for="online_payment" class="text-gray-600">Pembayaran Online</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="offline_payment" name="payment_type" value="offline" class="mr-2">
+                        <label for="offline_payment" class="text-gray-600">Pembayaran Offline</label>
+                    </div>
+                </div>
+                <div class="mb-6" id="online_payment_form" style="display:none;">
+                    <label for="payment_method" class="block text-gray-700 font-medium mb-2">Pilih Metode Pembayaran:</label>
+                    <select name="payment_method" id="payment_method" class="dark:bg-white dark:text-gray-900 block w-full px-4 py-2 mt-1 border rounded-md">
+                        <option value="cod" selected>Pembayaran langsung di tempat (COD)</option>
+                        <option value="dana">DANA</option>
+                        <option value="ovo">OVO</option>
+                        <option value="shopeepay">ShopeePay</option>
+                        <option value="gopay">GoPay</option>
+                        <option value="bca">Bank BCA</option>
+                        <option value="mandiri">Bank Mandiri</option>
+                    </select>
+                    <div class="mt-4">
+                        <label for="amount" class="block text-gray-700 font-medium mb-2">Masukkan Foto Bukti Pembayaran:</label>
+                        <input type="file" name="payment_proof" id="payment_proof" class="block w-full px-4 py-2 mt-1 border rounded-md">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-gray-700 font-medium mb-2">Nomor Rekening:</label>
+                        <div class="grid grid-cols-2 gap-4 text-gray-600">
+                            {% for data in dataPembayaran %}
+                            <div>{{ data.jenis_pembayaran }}</div>
+                            <div>: {{ data.nomor_pembayaran }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" id="payButton">Bayar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- hero section end -->
+
+<!-- Script untuk menampilkan/menyembunyikan formulir pembayaran online/offline -->
+<script>
+    $(document).ready(function(){
+        $('input[type="radio"]').click(function(){
+            if($(this).attr("id")=="online_payment"){
+                $("#online_payment_form").show();
+                $("#offline_payment_form").hide();
+                $("#payment_method").prop('required', true);
+                $("#payment_proof").prop('required', true);
+                // Sembunyikan opsi COD saat pembayaran online dipilih
+                $("#payment_method option[value='cod']").prop('disabled', true);
+                // Pilih opsi pertama selain COD saat pembayaran online dipilih
+                $("#payment_method option:not([value='cod']):first").prop('selected', true);
+            }
+            if($(this).attr("id")=="offline_payment"){
+                $("#offline_payment_form").show();
+                $("#online_payment_form").hide();
+                $("#payment_method").prop('required', false);
+                $("#payment_proof").prop('required', false);
+                // Tampilkan kembali opsi COD saat pembayaran offline dipilih
+                $("#payment_method option[value='cod']").prop('disabled', false);
+                // Pilih opsi COD sebagai default saat pembayaran offline dipilih
+                $("#payment_method option[value='cod']").prop('selected', true);
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var alertMessage = "{{ alert_message }}";
+        if (alertMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: alertMessage
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
